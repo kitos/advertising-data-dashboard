@@ -3,6 +3,8 @@ import { uniq } from 'lodash/fp'
 import { AdvertisingChart } from './AdvertisingChart'
 import { getAdvertisingData, IAdvertisingRecord } from './api'
 
+import classes from './App.module.css'
+
 let App = () => {
   let [data, setData] = useState<IAdvertisingRecord[]>([])
   let [campaign, setCampaign] = useState('')
@@ -22,10 +24,12 @@ let App = () => {
   )
 
   return (
-    <div>
-      <h1>Advertising Data</h1>
+    <div className={classes.layout}>
+      <header className={classes.header}>
+        <h1>Advertising Data</h1>
+      </header>
 
-      <div>
+      <aside className={classes.side}>
         <select value={campaign} onChange={(e) => setCampaign(e.target.value)}>
           <option key="" value="">
             All
@@ -50,13 +54,15 @@ let App = () => {
             </option>
           ))}
         </select>
-      </div>
+      </aside>
 
-      <AdvertisingChart
-        data={data}
-        campaigns={campaign ? [campaign] : []}
-        dataSources={dataSource ? [dataSource] : []}
-      />
+      <main className={classes.content}>
+        <AdvertisingChart
+          data={data}
+          campaigns={campaign ? [campaign] : []}
+          dataSources={dataSource ? [dataSource] : []}
+        />
+      </main>
     </div>
   )
 }

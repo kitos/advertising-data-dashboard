@@ -1,0 +1,23 @@
+.header {
+  grid-area: header;
+  padding: 16px;
+}
+.content {
+  grid-area: content;
+  padding: 16px;
+}
+.side {
+  width: 300px;
+  grid-area: sidebar;
+  padding: 16px;
+  background-color: #E9F4FC;
+}
+
+.layout {
+  height: 100%;
+  display: grid;
+  gap: 16px;
+  grid-template-areas:
+    'sidebar  header'
+    'sidebar content';
+}

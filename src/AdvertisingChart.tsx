@@ -39,11 +39,8 @@ export let AdvertisingChart: FC<{
   )
 
   return (
-    <ResponsiveContainer width="100%" height={700}>
-      <LineChart
-        data={filteredData}
-        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-      >
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={filteredData} margin={{ left: 50 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="date" />
         <YAxis />

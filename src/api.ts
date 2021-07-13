@@ -21,8 +21,8 @@ export let getAdvertisingData = async (): Promise<IAdvertisingRecord[]> => {
         date,
         dataSource,
         campaign,
-        clicks: parseInt(clicks),
-        impressions: parseInt(impressions),
+        clicks: parseInt(clicks) || 0,
+        impressions: parseInt(impressions) || 0,
       }
     })
     .slice(1)

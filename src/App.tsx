@@ -1,3 +1,4 @@
+import { flow, filter, groupBy, map, uniq } from 'lodash/fp'
 import { useEffect, useMemo, useState } from 'react'
 import {
   LineChart,
@@ -21,20 +22,30 @@ let App = () => {
   }, [])
 
   let campaigns = useMemo(
-    () => Array.from(new Set(data.map((r) => r.campaign))),
+    () => uniq(data.map((r) => r.campaign)).filter(Boolean),
     [data]
   )
   let dataSources = useMemo(
-    () => Array.from(new Set(data.map((r) => r.dataSource))),
+    () => uniq(data.map((r) => r.dataSource)).filter(Boolean),
     [data]
   )
-  let filteredData = useMemo(
+  let filteredData = useMemo<IAdvertisingRecord[]>(
     () =>
-      data.filter(
-        (r) =>
-          (!campaign || r.campaign === campaign) &&
-          (!dataSource || r.dataSource === dataSource)
-      ),
+      flow([
+        filter(
+          (r: IAdvertisingRecord) =>
+            (!campaign || r.campaign === campaign) &&
+            (!dataSource || r.dataSource === dataSource)
+        ),
+        groupBy('date'),
+        map((group: IAdvertisingRecord[]) =>
+          group.reduce((sum, record) => ({
+            ...sum,
+            clicks: sum.clicks + record.clicks,
+            impressions: sum.impressions + record.impressions,
+          }))
+        ),
+      ])(data),
     [data, campaign, dataSource]
   )
 
@@ -44,7 +55,9 @@ let App = () => {
 
       <div>
         <select value={campaign} onChange={(e) => setCampaign(e.target.value)}>
-          <option value="">All</option>
+          <option key="" value="">
+            All
+          </option>
           {campaigns.map((c) => (
             <option key={c} value={c}>
               {c}
@@ -56,7 +69,9 @@ let App = () => {
           value={dataSource}
           onChange={(e) => setDataSource(e.target.value)}
         >
-          <option value="">All</option>
+          <option key="" value="">
+            All
+          </option>
           {dataSources.map((ds) => (
             <option key={ds} value={ds}>
               {ds}
@@ -85,11 +100,13 @@ let App = () => {
             dataKey="clicks"
             stroke="#8884d8"
             dot={false}
+            animateNewValues={false}
             activeDot={{ r: 8 }}
           />
           <Line
             type="monotone"
             dot={false}
+            animateNewValues={false}
             dataKey="impressions"
             stroke="#82ca9d"
           />

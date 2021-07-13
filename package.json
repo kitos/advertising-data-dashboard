@@ -10,6 +10,8 @@
     "@types/node": "^12.20.16",
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.9",
+    "date-fns": "^2.22.1",
+    "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -46,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.171",
     "prettier": "^2.3.2"
   }
 }

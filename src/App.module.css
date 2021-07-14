@@ -11,6 +11,10 @@
   grid-area: sidebar;
   padding: 16px;
   background-color: #E9F4FC;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .layout {
@@ -20,4 +24,9 @@
   grid-template-areas:
     'sidebar  header'
     'sidebar content';
+}
+
+.fieldLabel {
+  display: block;
+  margin-bottom: 8px;
 }

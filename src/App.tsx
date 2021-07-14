@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { uniq } from 'lodash/fp'
 import Select, { ValueType } from 'react-select'
 
-import { AdvertisingChart } from './AdvertisingChart'
+import { AdvertisingChart, IGroupBy } from './AdvertisingChart'
 import { getAdvertisingData, IAdvertisingRecord } from './api'
 import { VirtualizedSelect } from './VirtualizedSelect'
 
@@ -10,12 +10,18 @@ import classes from './App.module.css'
 
 let toOption = (value: string) => ({ value, label: value })
 
-type ISelectValue = ValueType<{ label: string; value: string }, true> | null
+let groupByOptions = ['day', 'month'].map(toOption)
+
+type ISelectValue<Multi extends boolean = true> = ValueType<
+  { label: string; value: string },
+  Multi
+>
 
 let App = () => {
   let [data, setData] = useState<IAdvertisingRecord[]>([])
-  let [campaign, setCampaign] = useState<ISelectValue>(null)
-  let [dataSource, setDataSource] = useState<ISelectValue>(null)
+  let [campaign, setCampaign] = useState<ISelectValue | null>(null)
+  let [dataSource, setDataSource] = useState<ISelectValue | null>(null)
+  let [groupBy, setGroupBy] = useState<ISelectValue<false>>(groupByOptions[0])
 
   useEffect(() => {
     getAdvertisingData().then(setData)
@@ -64,6 +70,17 @@ let App = () => {
             isMulti
           />
         </label>
+
+        <label>
+          <span className={classes.fieldLabel}>Group by</span>
+
+          <Select
+            isClearable={false}
+            defaultValue={groupBy}
+            onChange={setGroupBy}
+            options={groupByOptions}
+          />
+        </label>
       </aside>
 
       <main className={classes.content}>
@@ -71,6 +88,7 @@ let App = () => {
           data={data}
           campaigns={campaign ? campaign.map((c) => c.value) : []}
           dataSources={dataSource ? dataSource.map((c) => c.value) : []}
+          groupBy={groupBy?.value as IGroupBy}
         />
       </main>
     </div>

@@ -10,14 +10,17 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { filter, flow, groupBy, map } from 'lodash/fp'
+import { filter, flow, groupBy as _groupBy, map } from 'lodash/fp'
 import { IAdvertisingRecord } from './api'
+
+export type IGroupBy = 'day' | 'month'
 
 export let AdvertisingChart: FC<{
   data: IAdvertisingRecord[]
   campaigns?: string[]
   dataSources?: string[]
-}> = ({ data, campaigns = [], dataSources = [] }) => {
+  groupBy?: IGroupBy
+}> = ({ data, campaigns = [], dataSources = [], groupBy = 'day' }) => {
   let filteredData = useMemo<IAdvertisingRecord[]>(
     () =>
       flow([
@@ -26,7 +29,11 @@ export let AdvertisingChart: FC<{
             (campaigns.length === 0 || campaigns.includes(r.campaign)) &&
             (dataSources.length === 0 || dataSources.includes(r.dataSource))
         ),
-        groupBy('date'),
+        _groupBy(
+          groupBy === 'day'
+            ? 'date'
+            : (record: IAdvertisingRecord) => record.date.substr(3)
+        ),
         map((group: IAdvertisingRecord[]) =>
           group.reduce((sum, record) => ({
             ...sum,
@@ -35,7 +42,7 @@ export let AdvertisingChart: FC<{
           }))
         ),
       ])(data),
-    [data, campaigns, dataSources]
+    [data, campaigns, dataSources, groupBy]
   )
 
   return (

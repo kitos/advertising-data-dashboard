@@ -7,7 +7,7 @@
   padding: 16px;
 }
 .side {
-  width: 300px;
+  width: 350px;
   grid-area: sidebar;
   padding: 16px;
   background-color: #E9F4FC;
@@ -29,4 +29,10 @@
 .fieldLabel {
   display: block;
   margin-bottom: 8px;
+}
+
+.datesContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
 }

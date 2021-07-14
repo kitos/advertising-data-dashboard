@@ -22,6 +22,8 @@ let App = () => {
   let [campaign, setCampaign] = useState<ISelectValue | null>(null)
   let [dataSource, setDataSource] = useState<ISelectValue | null>(null)
   let [groupBy, setGroupBy] = useState<ISelectValue<false>>(groupByOptions[0])
+  let [fromDate, setFrom] = useState<string>('')
+  let [toDate, setTo] = useState<string>('')
 
   useEffect(() => {
     getAdvertisingData().then(setData)
@@ -81,6 +83,28 @@ let App = () => {
             options={groupByOptions}
           />
         </label>
+
+        <div className={classes.datesContainer}>
+          <label>
+            <span className={classes.fieldLabel}>From date</span>
+
+            <input
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFrom(e.target.value)}
+            />
+          </label>
+
+          <label>
+            <span className={classes.fieldLabel}>To date</span>
+
+            <input
+              type="date"
+              value={toDate}
+              onChange={(e) => setTo(e.target.value)}
+            />
+          </label>
+        </div>
       </aside>
 
       <main className={classes.content}>
@@ -89,6 +113,8 @@ let App = () => {
           campaigns={campaign ? campaign.map((c) => c.value) : []}
           dataSources={dataSource ? dataSource.map((c) => c.value) : []}
           groupBy={groupBy?.value as IGroupBy}
+          fromDate={fromDate}
+          toDate={toDate}
         />
       </main>
     </div>

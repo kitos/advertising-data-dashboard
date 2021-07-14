@@ -6,6 +6,10 @@ export interface IAdvertisingRecord {
   impressions: number
 }
 
+export let dateStringToDate = (str: string) =>
+  // @ts-ignore
+  new Date(...str.split('.').reverse())
+
 export let getAdvertisingData = async (): Promise<IAdvertisingRecord[]> => {
   let response = await fetch(
     'http://adverity-challenge.s3-website-eu-west-1.amazonaws.com/DAMKBAoDBwoDBAkOBAYFCw.csv'

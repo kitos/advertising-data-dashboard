@@ -11,7 +11,7 @@ import {
   YAxis,
 } from 'recharts'
 import { filter, flow, groupBy as _groupBy, map } from 'lodash/fp'
-import { IAdvertisingRecord } from './api'
+import { dateStringToDate, IAdvertisingRecord } from './api'
 
 export type IGroupBy = 'day' | 'month'
 
@@ -20,14 +20,25 @@ export let AdvertisingChart: FC<{
   campaigns?: string[]
   dataSources?: string[]
   groupBy?: IGroupBy
-}> = ({ data, campaigns = [], dataSources = [], groupBy = 'day' }) => {
+  fromDate?: string
+  toDate?: string
+}> = ({
+  data,
+  campaigns = [],
+  dataSources = [],
+  groupBy = 'day',
+  fromDate,
+  toDate,
+}) => {
   let filteredData = useMemo<IAdvertisingRecord[]>(
     () =>
       flow([
         filter(
           (r: IAdvertisingRecord) =>
             (campaigns.length === 0 || campaigns.includes(r.campaign)) &&
-            (dataSources.length === 0 || dataSources.includes(r.dataSource))
+            (dataSources.length === 0 || dataSources.includes(r.dataSource)) &&
+            (!fromDate || dateStringToDate(r.date) > new Date(fromDate)) &&
+            (!toDate || dateStringToDate(r.date) < new Date(toDate))
         ),
         _groupBy(
           groupBy === 'day'
@@ -42,7 +53,7 @@ export let AdvertisingChart: FC<{
           }))
         ),
       ])(data),
-    [data, campaigns, dataSources, groupBy]
+    [data, campaigns, dataSources, groupBy, fromDate, toDate]
   )
 
   return (
@@ -54,14 +65,14 @@ export let AdvertisingChart: FC<{
         <Tooltip />
         <Legend />
         <Line
-          type="monotone"
+          type="linear"
           dataKey="clicks"
           stroke="#8884d8"
           dot={false}
           animateNewValues={false}
         />
         <Line
-          type="monotone"
+          type="linear"
           dot={false}
           animateNewValues={false}
           dataKey="impressions"
